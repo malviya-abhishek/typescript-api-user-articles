@@ -23,7 +23,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     UserId!: number;
 
     static associate(models: any) {
-      Article.belongsTo(models.User);
+      Article.belongsTo(models.User, {onDelete: "cascade"});
     }
   }
   Article.init({
@@ -47,7 +47,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
       references:{
         model: 'Users',
         key: 'id'
-      }
+      },
+      onDelete: "CASCADE"
     }
 
   }, {

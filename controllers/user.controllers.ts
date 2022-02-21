@@ -2,21 +2,24 @@ import {Request, Response} from 'express';
 import db from '../models'
 
 const getUsers = (req: Request, res: Response) =>{
-    console.log("Hello world");
-    
-    db.User.findAll( {} ).then( (result : any )=>{
-        res.status(201).json(result);
-    } ).catch( (err: any) => {
-        res.status(500).json({msg : err})
-    } )
+    db.User.findAll({ 
+        attributes: { exclude: ['password', "updatedAt"]} 
+        })
+        .then( (result : any )=>{
+            res.status(201).json(result);
+        })
+        .catch( (err: any) => {
+            res.status(500).json({msg : err})
+        })
 }
 
 const getUser = (req: Request, res: Response) => {
     const userId = req.params.userId;
-    db.User.findByPk(userId).then((result: any)=>{
-        const toSend = result.dataValues;
-        delete toSend["password"];
-        delete toSend["updatedAt"];
+    db.User.findByPk( 
+        userId, 
+        { attributes: { exclude: ['password', "updatedAt"]}} 
+        )
+    .then((result: any)=>{
         res.status(200).json(result);
     }).catch((err: any)=>{
         res.status(500).json({ error :  err});
@@ -38,9 +41,38 @@ const createUser = (req: Request, res: Response) => {
     })
 }
 
+const updateUser = (req: Request, res: Response) => {
+    const userId = req.params.userId;
+    const user: {[k: string]: any} = {};
+    if(req.body.name) user.name =  req.body.name;
+    if(req.body.email) user.email =  req.body.email;
+    if(req.body.password) user.password =  req.body.password;
+    db.User.update(
+        user,
+        {
+            where: { id: userId }
+        }).then( (result: any)=>{
+        res.status(200).json(result)
+    })
+    .catch( (err: any)=>{
+        res.status(500).json({error : err})
+    })
+}
+
+const deleteUser = (req: Request, res: Response) => {
+    const userId = req.params.userId;
+    db.User.destroy( {where: {id : userId} , cascade: true } ).then( (result: any)=>{
+        res.status(200).json(result)
+    })
+    .catch( (err: any)=>{
+        res.status(500).json({error : err})
+    })
+}
 
 export const userController = {
     getUser,
     getUsers,
-    createUser
+    createUser,
+    updateUser,
+    deleteUser
 };

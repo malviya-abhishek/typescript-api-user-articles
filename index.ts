@@ -19,7 +19,6 @@ import {userRoutes} from './routes/user.routes';
 userRoutes(app);
 
 
-
 db.sequelize.sync().then( ()=>{
     app.listen(PORT, ()=>{
         console.log("Server started at port", PORT);
@@ -27,15 +26,3 @@ db.sequelize.sync().then( ()=>{
 }).catch( (err : any)=>{
     console.log(err);
 });
-
-// app.get("/", (req, res)=>{
-//     db.User.findAll({
-//         include: {
-//             model: db.Article
-//         }
-//     }).then((result: object)=>{
-//         res.send(result)
-//     }).catch( (err: object)=>{
-//         res.send(err)
-//     } )
-// })
