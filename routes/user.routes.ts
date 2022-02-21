@@ -7,4 +7,6 @@ export const userRoutes = function (app:Express) {
     app.post("/users", [userController.createUser]);
     app.put("/users/:userId", [userController.updateUser]);
     app.delete("/users/:userId", [userController.deleteUser]);
+
+    app.get("/users/:userId/articles", [userController.getUserArticles])
 }

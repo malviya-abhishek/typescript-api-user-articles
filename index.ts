@@ -18,6 +18,9 @@ app.use(express.urlencoded({extended: true}));
 import {userRoutes} from './routes/user.routes';
 userRoutes(app);
 
+import {articleRoutes} from './routes/article.routs';
+articleRoutes(app)
+
 
 db.sequelize.sync().then( ()=>{
     app.listen(PORT, ()=>{

@@ -69,10 +69,20 @@ const deleteUser = (req: Request, res: Response) => {
     })
 }
 
+const getUserArticles = (req: Request, res: Response) =>{
+    const userId = req.params.userId
+    db.Article.findAll({where: {UserId : userId}} ).then((result: object)=>{
+        res.send(result)
+    }).catch( (err: object)=>{
+        res.status(500).json({error : err})
+    })
+}
+
 export const userController = {
     getUser,
     getUsers,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getUserArticles
 };
