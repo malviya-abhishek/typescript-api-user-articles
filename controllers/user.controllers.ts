@@ -6,7 +6,7 @@ const getUsers = (req: Request, res: Response) =>{
         attributes: { exclude: ['password', "updatedAt"]} 
         })
         .then( (result : any )=>{
-            res.status(201).json(result);
+            res.status(200).json(result);
         })
         .catch( (err: any) => {
             res.status(500).json({msg : err})
