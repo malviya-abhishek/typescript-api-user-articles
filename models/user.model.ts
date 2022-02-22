@@ -1,5 +1,11 @@
 'use strict';
 import { Model } from 'sequelize';
+import crypto from 'crypto';
+import * as jwt from 'jsonwebtoken'
+require("dotenv").config();
+
+const JWT_SECRET = process.env.JWT_SECRET as string;
+
 
 interface UserAttributes{
   id: number;
@@ -11,23 +17,33 @@ interface UserAttributes{
 
 module.exports = (sequelize: any, DataTypes: any) => {
   class User extends Model<UserAttributes> implements UserAttributes {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-
     id!: number;
     name!: string;
     email!: string;
     password!: string; 
 
     static associate(models: any) {
-      // define association here
       User.hasMany(models.Article, {
         onDelete: "cascade",
       })
     }
+
+    validPassword(password : string) : boolean {
+      const hashedPassword = crypto.pbkdf2Sync(password, "salt", 10000, 100, 'sha512').toString('hex');;
+      return this.password === hashedPassword;
+    }
+
+    generateJWT(){
+      const today = new Date();
+      const exp = new Date(today);
+      exp.setDate(today.getDate() + 60);
+      return jwt.sign({
+        id : this.id,
+        email: this.email,
+        exp: exp.getTime() / 1000,
+      }, JWT_SECRET)
+    }
+
   }
   User.init({
         id: {
@@ -50,9 +66,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
           allowNull: false
         }
 
-  }, {
-    sequelize,
+  }, 
+  {
+    sequelize, 
     modelName: 'User',
+    
   });
   return User;
 };

@@ -25,6 +25,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
     static associate(models: any) {
       Article.belongsTo(models.User, {onDelete: "cascade"});
     }
+
+    validUser(userId: number) : boolean{
+      return this.UserId === userId;
+    }
+
   }
   Article.init({
     id:{
