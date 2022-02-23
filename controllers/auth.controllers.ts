@@ -3,6 +3,8 @@ import db from '../models';
 
 const userLogin = (req : Request, res: Response)=>{
     const {email, password} = req.body;
+    console.log(email, password);
+    
     if(!email || !password )
         return res.status(400).json({ msg: "Incorrect email or password" })
 

@@ -29,7 +29,7 @@ const createArticle = (req: Request, res: Response) => {
         UserId: jwt.id
     }
 
-    console.log("asd" ,article);
+    // console.log("asd" ,article);
     
 
     db.Article.create(article)
