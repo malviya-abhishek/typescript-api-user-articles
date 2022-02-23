@@ -43,7 +43,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
       allowNull: false
     },
     content: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false
     },
     UserId: {

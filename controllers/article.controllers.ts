@@ -25,7 +25,7 @@ const createArticle = (req: Request, res: Response) => {
 
     const article = {
         title: title,
-        content: content.substring(0, Math.min(content.length, 200)),
+        content: content,
         UserId: jwt.id
     }
 
