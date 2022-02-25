@@ -7,13 +7,14 @@ export const validJWT = (req: Request, res: Response, next: NextFunction) =>{
     if (req.headers["authorization"]) {
 		try {
 			let authorization = req.headers["authorization"].split(" ");
-			if (authorization[0] !== "Bearer") return res.status(401).json({error: "Invalid token"});
+			if (authorization[0] !== "Bearer") 
+				return res.status(401).json({error: "Invalid token"});
 			else {
 				req.params.jwt = JSON.stringify( jwt.verify(authorization[1], JWT_SECRET) );
 				return next();
 			}
 		} catch (err) {
-			return res.status(401).json({error: "Invalid token"});
+			return res.status(401).json({error: "Invalid request"});
 		}
 	} else {
 		return res.status(401).json({error: "Invalid token"});
