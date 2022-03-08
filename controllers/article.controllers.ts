@@ -1,5 +1,6 @@
 import {Request, Response} from 'express';
 import db from '../models'
+import { Op } from 'sequelize';
 
 const getArticle = (req: Request, res: Response) => {
     const articleId = req.params.articleId;
@@ -15,7 +16,15 @@ const getArticle = (req: Request, res: Response) => {
 }
 
 const getArticles = (req: Request, res: Response) => {
-    db.Article.findAll().then((result: object)=>{
+    const options = {
+        include: [
+            {
+                model : db.User,  
+                attributes: { exclude: ['password', "updatedAt", "email", "createdAt"]} 
+            }
+        ]
+    };
+    db.Article.findAll(options).then((result: object)=>{
         res.send(result)
     }).catch( (err: object)=>{
         res.status(500).json({error : err})
@@ -107,11 +116,45 @@ const deleteArticle = (req: Request, res: Response) => {
 
 }
 
+const wordSearch = (req: Request, res: Response) =>{
+    const word = req.query.word;
+    if(word){
+        const options = {
+            where: {
+              [Op.or]: [
+                { 'title': { [Op.like]: `%${word}%` }},
+                { 'content': { [Op.like]: `%${word}%` }},
+                { '$User.name$': { [Op.like]: `%${word}%` }}
+              ]
+            },
+            include: [
+                {
+                    model : db.User,  
+                    attributes: { exclude: ['password', "updatedAt", "email", "createdAt"]} 
+                }
+            ]
+          };
+
+        
+
+        db.Article.findAll(options).then((result : any)=>{
+            res.status(200).json({result});
+        }).catch((err : any)=>{
+            console.log(err);
+            res.status(500).json({"msg": "Something went wrong"});
+        })
+    }
+    else
+        res.status(400).json({"msg" : "empty key word"})
+
+}
+
 
 export const articleController = {
     getArticle,
     getArticles,
     createArticle,
     updateArticle,
-    deleteArticle
+    deleteArticle,
+    wordSearch
 };

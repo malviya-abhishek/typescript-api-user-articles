@@ -8,4 +8,6 @@ export const articleRoutes = function (app:Express) {
     app.post("/articles", [ validJWT, articleController.createArticle]);
     app.put("/articles/:articleId", [validJWT, articleController.updateArticle]);
     app.delete("/articles/:articleId", [validJWT, articleController.deleteArticle]);
+    
+    app.post("/articles/wordsearch", [articleController.wordSearch]);
 }
