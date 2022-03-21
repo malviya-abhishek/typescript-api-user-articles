@@ -77,7 +77,8 @@ const updateUser = (req: Request, res: Response) => {
         const user: {[k: string]: any} = {};
         if(req.body.name && req.body.name.length > 0  ) user.name =  req.body.name;
         if(req.body.email && req.body.email.length > 0 ) user.email =  req.body.email;
-        if(req.body.password && req.body.password.length > 0 ) user.password =  req.body.password;
+        if(req.body.password && req.body.password.length > 0 )
+            user.password =  crypto.pbkdf2Sync(req.body.password, "salt", 10000, 100, 'sha512').toString('hex');
         
         db.User.update(
             user,
