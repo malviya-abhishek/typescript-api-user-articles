@@ -4,7 +4,18 @@ import { Op } from 'sequelize';
 
 const getArticle = (req: Request, res: Response) => {
     const articleId = req.params.articleId;
-    db.Article.findByPk(articleId)
+    const options = {
+        include: [
+            {
+                model : db.User,  
+                attributes: { exclude: ['password', "updatedAt", "email", "createdAt"]} 
+            }
+        ],
+        attributes:{
+            exclude:['UserId']
+        }
+    };
+    db.Article.findByPk(articleId, options)
     .then((result: any)=>{
         if(result == null)
             res.status(404).json({"msg" : "article does not exist"})
@@ -22,7 +33,10 @@ const getArticles = (req: Request, res: Response) => {
                 model : db.User,  
                 attributes: { exclude: ['password', "updatedAt", "email", "createdAt"]} 
             }
-        ]
+        ],
+        attributes:{
+            exclude:['UserId']
+        }
     };
     db.Article.findAll(options).then((result: object)=>{
         res.send(result)
@@ -41,9 +55,31 @@ const createArticle = (req: Request, res: Response) => {
             content: content,
             UserId: jwt.id
         }
+        
         db.Article.create(article)
         .then( ( article : any ) => {
-            res.status(201).json(article)
+            const articleId = article.id;
+            const options = {
+                include: [
+                    {
+                        model : db.User,  
+                        attributes: { exclude: ['password', "updatedAt", "email", "createdAt"]} 
+                    }
+                ],
+                attributes:{
+                    exclude:['UserId']
+                }
+            };
+            db.Article.findByPk(articleId, options)
+            .then((result: any)=>{
+                if(result == null)
+                    res.status(404).json({"msg" : "article does not exist"})
+                else
+                    res.status(200).json(result);
+            }).catch((err: any)=>{
+                res.status(500).json({ error :  err});
+            })
+
         })
         .catch( (err: any) => {
             res.status(400).json({error: err});
@@ -63,8 +99,10 @@ const updateArticle = (req: Request, res: Response) => {
     db.Article.findByPk(articleId)
     .then((article: any)=>{
 
-        if(!article || article.validUser(userId) === false)
-            return res.status(400).json({"error": "Incorrect token"});
+        if(!article)
+            return res.status(404).json({"msg": "Article does not exist"});
+        else if(article.validUser(userId) === false)
+            return res.status(400).json({"error": "Invalid token"});
         else{
         
             const newArticle: {[k: string]: any} = {};
@@ -75,12 +113,32 @@ const updateArticle = (req: Request, res: Response) => {
                 newArticle,
                 {where: {id: articleId}})
             .then( (result : any )=>{
-                res.status(200).json({"msg" : "Article updated" })
+                const options = {
+                    include: [
+                        {
+                            model : db.User,  
+                            attributes: { exclude: ['password', "updatedAt", "email", "createdAt"]} 
+                        }
+                    ],
+                    attributes:{
+                        exclude:['UserId']
+                    }
+                };
+                db.Article.findByPk(articleId, options)
+                .then((result: any)=>{
+                    if(result == null)
+                        res.status(404).json({"msg" : "article does not exist"})
+                    else
+                        res.status(200).json(result);
+                }).catch((err: any)=>{
+                    res.status(500).json({ error :  err});
+                });
+
             })
             .catch( (err: any)=>{
                 console.log(err);
                 res.status(500).json({error : err})
-            })
+            });
 
         }
     
@@ -104,7 +162,7 @@ const deleteArticle = (req: Request, res: Response) => {
             return res.status(400).json({"error": "Incorrect token"});
         else{
             article.destroy().then( (result: any)=>{
-                res.status(200).json({result});
+                res.status(200).json({msg: "Article deleted"});
             }).catch( (err: any)=>{
                 console.log(err);
                 res.status(500).json({error: err})
@@ -132,7 +190,10 @@ const wordSearch = (req: Request, res: Response) =>{
                     model : db.User,  
                     attributes: { exclude: ['password', "updatedAt", "email", "createdAt"]} 
                 }
-            ]
+            ],
+            attributes:{
+                exclude:['UserId']
+            }
           };
 
         

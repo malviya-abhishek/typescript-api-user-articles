@@ -24,7 +24,6 @@ export const userRoutes = function (app:Express) {
     */
     app.get("/users", [userController.getUsers]);
 
-
     /**
     * @openapi
     * '/users/{userId}':
@@ -130,7 +129,7 @@ export const userRoutes = function (app:Express) {
     *         content:
     *          application/json:
     *           schema:
-    *              $ref: '#/components/schemas/GetAUser'
+    *              $ref: '#/components/schemas/DeleteUser' 
     *       404:
     *         description: User not found
     */

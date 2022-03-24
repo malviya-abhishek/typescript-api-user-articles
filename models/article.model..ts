@@ -8,6 +8,66 @@ interface ArticleAttributes{
   UserId: number
 }
 
+/**
+ * @openapi
+ * components:
+ * 
+ *  schemas:
+ *    GetAllArticles:
+ *      type: array
+ *      items: 
+ *        type: object
+ *        properties:
+ *          id: 
+ *            type: string
+ *          title:
+ *            type: string
+ *          content:
+ *            type: string
+ *          User:
+ *            type: object
+ *            properties:
+ *              id: 
+ *                type: string
+ *              name:
+ *                type: string
+ *          createdAt:
+ *            type: string
+ *          updatedAt:
+ *            type: string
+ *    GetAArticle:
+ *      type: object
+ *      properties:
+ *        id: 
+ *          type: string
+ *        title:
+ *          type: string
+ *        content:
+ *          type: string
+ *        User:
+ *          type: object
+ *          properties:
+ *            id: 
+ *              type: string
+ *            name:
+ *              type: string
+ *        createdAt:
+ *          type: string
+ *        updatedAt:
+ *          type: string    
+ *    CreateArticleInput:
+ *      type: object
+ *      properties:
+ *        title:
+ *          type: string
+ *        content:
+ *          type: string
+ *    DeleteArticle:
+ *      type: object
+ *      properties:
+ *        msg:
+ *          type: string 
+ */
 
 module.exports = (sequelize: any, DataTypes: any) => {
   class Article extends Model<ArticleAttributes> implements ArticleAttributes {

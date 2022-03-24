@@ -107,6 +107,11 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
  *          type: string
  *        password:
  *          type: string
+ *    DeleteUser:
+ *      type: object
+ *      properties:
+ *        msg:
+ *          type: string
  */
 
 
