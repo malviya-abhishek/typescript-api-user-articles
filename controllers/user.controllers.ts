@@ -16,6 +16,7 @@ const getUsers = (req: Request, res: Response) =>{
 
 const getUser = (req: Request, res: Response) => {
     const userId = req.params.userId;
+    
     db.User.findByPk( 
         userId, 
         { 
@@ -56,14 +57,25 @@ const createUser = (req: Request, res: Response) => {
 
     user.password =  crypto.pbkdf2Sync(user.password, "salt", 10000, 100, 'sha512').toString('hex');
 
-    db.User.create(user).then( (user: any)=>{
-        const toSend = user.dataValues;
-        delete toSend["password"];
-        toSend["token"] = user.generateJWT();
-        res.status(201).json(toSend);
-    }).catch( (err: object)=> {
+    db.User.findAll({where: {email : user.email}} ).then((result: Array<object>)=>{
+        if(result.length)
+            res.status(400).json({msg: "email already used"})
+        else{
+            db.User.create(user).then( (user: any)=>{
+                const toSend = user.dataValues;
+                delete toSend["password"];
+                toSend["token"] = user.generateJWT();
+                res.status(201).json(toSend);
+            }).catch( (err: object)=> {
+                console.log(err);
+                res.status(500).json({error : err})
+            })
+        }
+    }).catch( (err: object)=>{
         res.status(500).json({error : err})
     })
+
+    
 }
 
 const updateUser = (req: Request, res: Response) => {
@@ -76,16 +88,26 @@ const updateUser = (req: Request, res: Response) => {
     else{
         const user: {[k: string]: any} = {};
         if(req.body.name && req.body.name.length > 0  ) user.name =  req.body.name;
-        if(req.body.email && req.body.email.length > 0 ) user.email =  req.body.email;
         if(req.body.password && req.body.password.length > 0 )
             user.password =  crypto.pbkdf2Sync(req.body.password, "salt", 10000, 100, 'sha512').toString('hex');
-        
         db.User.update(
             user,
             {
                 where: { id: userId }
             }).then( (result: any)=>{
-            res.status(200).json({msg : "user updated"})
+                db.User.findByPk( 
+                    userId, 
+                    { 
+                        attributes: { exclude: ['password', "updatedAt"]}} 
+                    )
+                .then((user: any)=>{
+                    if(user === null)
+                        res.status(404).json({"msg" : "user does not exist"});
+                    else
+                        res.status(200).json(user);
+                }).catch((err: any)=>{
+                    res.status(500).json({ error :  err});
+                });
         })
         .catch( (err: any)=>{
             console.log(err);
@@ -104,7 +126,7 @@ const deleteUser = (req: Request, res: Response) => {
     }
     else
         db.User.destroy( {where: {id : userId} , cascade: true } ).then( (result: any)=>{
-            res.status(200).json(result)
+            res.status(200).json({msg: "user deleted"})
         })
         .catch( (err: any)=>{
             res.status(500).json({error : err})

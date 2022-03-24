@@ -7,6 +7,77 @@ require("dotenv").config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
 
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *    CreateUserInput:
+ *      type: object
+ *      required:
+ *        - email
+ *        - name
+ *        - password
+ *      properties:
+ *        email:
+ *          type: string
+ *          default: jane.doe@example.com
+ *        name:
+ *          type: string
+ *          default: Jane Doe
+ *        password:
+ *          type: string
+ *          default: stringPassword123
+ *    CreateUserResponse:
+ *      type: object
+ *      properties:
+ *        id:
+ *          type: string
+ *        name:
+ *          type: string
+ *        email:
+ *          type: string
+ *        createdAt:
+ *          type: string
+ *        updatedAt:
+ *          type: string
+ *        token:
+ *          type: string
+ *    GetAllUsers:
+ *      type: array
+ *      items: 
+ *        type: object
+ *        properties:
+ *          id: 
+ *            type: string
+ *          name:
+ *            type: string
+ *          email:
+ *            type: string
+ *          createdAt:
+ *            type: string
+ *    GetAUser:
+ *      type: object
+ *      properties:
+ *        id: 
+ *          type: string
+ *        name:
+ *          type: string
+ *        email:
+ *          type: string
+ *        createdAt:
+ *          type: string
+ *    EditUserInput:
+ *      type: object
+ *      required:
+ *        - name
+ *        - password
+ *      properties:
+ *        name:
+ *          type: string
+ *        password:
+ *          type: string
+ */
+
 interface UserAttributes{
   id: number;
   name: string;

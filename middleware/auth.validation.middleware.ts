@@ -17,6 +17,6 @@ export const validJWT = (req: Request, res: Response, next: NextFunction) =>{
 			return res.status(401).json({error: "Invalid request"});
 		}
 	} else {
-		return res.status(401).json({error: "Invalid token"});
+		return res.status(401).json({error: "Token not present"});
 	}
 }

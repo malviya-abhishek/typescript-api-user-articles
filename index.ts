@@ -7,7 +7,7 @@ import db from './models';
 import cors from 'cors'
 
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || "4000";
 
 
 const app = express();
@@ -23,6 +23,8 @@ userRoutes(app);
 import {articleRoutes} from './routes/article.routes';
 articleRoutes(app)
 
+import swaggerDocs from './swagger/swagger';
+swaggerDocs(app, PORT);
 
 db.sequelize.sync().then( ()=>{
     app.listen(PORT, ()=>{
