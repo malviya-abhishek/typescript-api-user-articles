@@ -76,7 +76,40 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
  *          type: string
  *        password:
  *          type: string
+ *    GetUserArticles:
+ *      type: array
+ *      items: 
+ *        type: object
+ *        properties:
+ *          id: 
+ *            type: string
+ *          title:
+ *            type: string
+ *          content:
+ *            type: string
+ *          UserId:
+ *            type: string
+ *          createdAt:
+ *            type: string
+ *          updatedAt:
+ *            type: string
+ *    LoginInput:
+ *      type: object
+ *      properties:
+ *        email:
+ *          type: string
+ *        password:
+ *          type: string
+ *    Token:
+ *      type: object
+ *      properties:
+ *        token:
+ *          type: string
+ *        password:
+ *          type: string
  */
+
+
 
 interface UserAttributes{
   id: number;

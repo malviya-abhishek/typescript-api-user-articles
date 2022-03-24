@@ -136,6 +136,54 @@ export const userRoutes = function (app:Express) {
     */
     app.delete("/users/:userId", [validJWT, userController.deleteUser]);
     
+    /**
+    * @openapi
+    * '/users/{userId}/articles':
+    *  get:
+    *     tags:
+    *     - User
+    *     summary: Get all articles of a single user
+    *     parameters:
+    *      - name: userId
+    *        in: path
+    *        description: The id of the user
+    *        required: true
+    *     responses:
+    *       200:
+    *         description: Success
+    *         content:
+    *          application/json:
+    *           schema:
+    *              $ref: '#/components/schemas/GetUserArticles'
+    *       404:
+    *         description: No article found
+    */
     app.get("/users/:userId/articles", [userController.getUserArticles]);
+
+    /**
+     * @openapi
+     * '/users/login':
+     *  post:
+     *     tags:
+     *     - User
+     *     summary: Get token
+     *     requestBody:
+     *      required: true
+     *      content:
+     *        application/json:
+     *           schema:
+     *              $ref: '#/components/schemas/LoginInput'
+     *     responses:
+     *      200:
+     *        description: Success
+     *        content:
+     *          application/json:
+     *            schema:
+     *              $ref: '#/components/schemas/Token'
+     *      400:
+     *        description: Bad request
+     *      500:
+     *        description: Internal server error
+    */    
     app.post("/users/login", [authController.userLogin]);
 }
